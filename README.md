@@ -5,7 +5,7 @@ If you want Paperclip Dropbox support, have a look at this [great gem](https://g
 
 ## Installation
 
-First of all, install my (Imgur API gem)[https://github.com/dncrht/imgur].
+First of all, install my [Imgur API gem](https://github.com/dncrht/imgur).
 
 Clone this project, build the gem and install it:
  
