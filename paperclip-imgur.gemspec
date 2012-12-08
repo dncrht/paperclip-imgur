@@ -5,10 +5,11 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 Gem::Specification.new do |gem|
   gem.name          = 'paperclip-imgur'
   gem.version       = '0.0.1'
-  gem.authors       = ['dncrht']
+  gem.authors       = ['Daniel Cruz Horts']
   gem.description   = %q{Extends Paperclip with Imgur storage}
   gem.summary       = gem.description
   gem.homepage      = 'https://github.com/dncrht'
+  gem.license       = 'MIT'
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
