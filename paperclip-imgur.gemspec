@@ -8,7 +8,7 @@ Gem::Specification.new do |gem|
   gem.authors       = ['Daniel Cruz Horts']
   gem.description   = %q{Extends Paperclip with Imgur storage}
   gem.summary       = gem.description
-  gem.homepage      = 'https://github.com/dncrht'
+  gem.homepage      = 'https://github.com/dncrht/paperclip-imgur'
   gem.license       = 'MIT'
 
   gem.files         = `git ls-files`.split($/)
