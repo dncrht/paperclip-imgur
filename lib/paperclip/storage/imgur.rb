@@ -20,10 +20,10 @@ module Paperclip
           imgur_session(imgur_credentials)
         end
       end
-      
+
       # We have to trust that any Imgur hash stored into *_file_name represents an existing Imgur image.
       # This assumption let us avoid the latency of a network call.
-      # If not, someone would have touched where it shouln't touch!
+      # If not, someone has touched where he shouldn't!
       def exists?(style_name = default_style)
         if original_filename
           true
@@ -34,19 +34,19 @@ module Paperclip
 
       def flush_writes
         @queued_for_write.each do |style, file| #style is 'original' etc...
-          
+
           begin
-            image = @imgur_session.upload(file)
-            image_hash = image.hash
+            image = @imgur_session.image.image_upload(file)
+            image_id = image.id
           rescue
             # Sometimes there are API or network errors.
             # In this cases, we don't store anything.
-            image_hash = nil
+            image_id = nil
           end
-          
+
           # What? update_column? Yes...
           # ...we cannot use update_attribute because it internally calls save, and save calls flush_writes again, and it will end up in a stack overflow due excessive recursion
-          instance.update_column :"#{name}_#{:file_name}", image_hash
+          instance.update_column :"#{name}_#{:file_name}", image_id
         end
         after_flush_writes
         @queued_for_write = {}
@@ -54,7 +54,7 @@ module Paperclip
 
       def flush_deletes
         @queued_for_delete.each do |path|
-          @imgur_session.destroy(path) # Doesn't matter if the image doesn't really exists
+          @imgur_session.image.image_delete(path) # Doesn't matter if the image doesn't really exists
         end
         @queued_for_delete = []
       end
@@ -62,11 +62,11 @@ module Paperclip
       # Returns the image's URL.
       # We don't use imgur_session.find to avoid the latency of a network call.
       def url(size = default_style)
-        image = "#{instance.send(:"#{name}_#{:file_name}")}"
+        image_id = instance.send("#{name}_#{:file_name}")
 
-        return @url_generator.for(size, {}) if image == '' # Paperclip's default missing image path
-        
-        @imgur_session.url image, size
+        return @url_generator.for(size, {}) if image_id.blank? # Paperclip's default missing image path
+
+        ::Imgur::Image.new(id: image_id).url(size)
       end
 
       # Returns the path of the attachment.
@@ -74,7 +74,7 @@ module Paperclip
       def path(style_name = default_style)
         original_filename
       end
-    
+
       def copy_to_local_file(style, destination_path)
         # TO BE DONE
         #local_file = File.open(destination_path, 'wb')
