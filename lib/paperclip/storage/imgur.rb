@@ -1,23 +1,21 @@
 require 'yaml'
 require 'erb'
+require 'imgur'
 
 module Paperclip
   module Storage
     module Imgur
-      def self.extended(base)
-        begin
-          require 'imgur'
-        rescue LoadError => e
-          e.message << " (You may need to install the imgur gem from dncrht's github)"
-          raise e
-        end unless defined?(::Imgur)
 
+      # Specify credentials in a file, path, string or hash.
+      # Required fields: client_id, client_secret, refresh_token
+      def self.extended(base)
         base.instance_eval do
           imgur_credentials = parse_credentials(@options[:imgur_credentials])
           imgur_options = @options[:imgur_options] || {}
           environment = defined?(Rails) ? Rails.env : imgur_options[:environment].to_s
-          imgur_credentials = (imgur_credentials[environment] || imgur_credentials).symbolize_keys # Read credentials from the current Rails environment, if any
-          imgur_session(imgur_credentials)
+
+          # Use credentials for the current Rails environment, if any
+          @imgur_credentials = (imgur_credentials[environment] || imgur_credentials).symbolize_keys
         end
       end
 
@@ -36,7 +34,7 @@ module Paperclip
         @queued_for_write.each do |style, file| #style is 'original' etc...
 
           begin
-            image = @imgur_session.image.image_upload(file)
+            image = imgur_session.image.image_upload(file)
             image_id = image.id
           rescue
             # Sometimes there are API or network errors.
@@ -44,8 +42,8 @@ module Paperclip
             image_id = nil
           end
 
-          # What? update_column? Yes...
-          # ...we cannot use update_attribute because it internally calls save, and save calls flush_writes again, and it will end up in a stack overflow due excessive recursion
+          # We cannot use update_attribute because it internally calls save, and save calls
+          # flush_writes again, and it will end up in a stack overflow due excessive recursion
           instance.update_column :"#{name}_#{:file_name}", image_id
         end
         after_flush_writes
@@ -54,7 +52,7 @@ module Paperclip
 
       def flush_deletes
         @queued_for_delete.each do |path|
-          @imgur_session.image.image_delete(path) # Doesn't matter if the image doesn't really exists
+          imgur_session.image.image_delete(path) # Doesn't matter if the image doesn't really exists
         end
         @queued_for_delete = []
       end
@@ -64,7 +62,7 @@ module Paperclip
       def url(size = default_style)
         image_id = instance.send("#{name}_#{:file_name}")
 
-        return @url_generator.for(size, {}) if image_id.blank? # Paperclip's default missing image path
+        return @url_generator.for(size, {}) if image_id.nil? || image_id.empty? # Show Paperclip's default missing image path
 
         ::Imgur::Image.new(id: image_id).url(size)
       end
@@ -82,30 +80,27 @@ module Paperclip
         #local_file.close
       end
 
-      #private
+      private
 
-      def imgur_session(imgur_credentials)
-        @imgur_session = ::Imgur::Session.new(imgur_credentials)
+      def imgur_session
+        @imgur_session ||= ::Imgur::Session.new(@imgur_credentials)
       end
 
       def parse_credentials(credentials = nil)
-        if credentials.nil? and defined?(Rails) and File.exists?("#{Rails.root}/config/imgur.yml")
+        if credentials.nil? && defined?(Rails)
           credentials = "#{Rails.root}/config/imgur.yml"
         end
 
-        result =
-          case credentials
-        when File
-          YAML.load(ERB.new(File.read(credentials.path)).result)
-        when String, Pathname
-          YAML.load(ERB.new(File.read(credentials)).result)
-        when Hash
-          credentials
-        else
-          raise ArgumentError, ":imgur_credentials are not a path, file, nor a hash"
-        end
+        credentials = case credentials
+                      when File
+                        YAML.load(ERB.new(File.read(credentials.path)).result)
+                      when String, Pathname
+                        YAML.load(ERB.new(File.read(credentials)).result)
+                      end
 
-        result.stringify_keys
+        return credentials.stringify_keys if credentials.respond_to? :stringify_keys
+
+        raise ArgumentError, 'Please specify Imgur credentials via a file, string or hash.'
       end
     end
   end
