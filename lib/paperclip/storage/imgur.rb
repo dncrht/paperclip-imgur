@@ -83,7 +83,7 @@ module Paperclip
       private
 
       def imgur_session
-        @imgur_session ||= ::Imgur::Session.new(@imgur_credentials)
+        @imgur_session ||= ::Imgur::Session.instance(@imgur_credentials)
       end
 
       def parse_credentials(credentials = nil)
