@@ -44,11 +44,11 @@ You can also specify the credentials per model attribute, using a hash:
 ```ruby
 has_attached_file :avatar, storage: :imgur, imgur_credentials: {client_id: 'CLIENT_ID', client_secret: 'CLIENT_SECRET', refresh_token: 'REFRESH_TOKEN'}
 ```
-...or path to a YAML file
+…or path to a YAML file
 ```ruby
 has_attached_file :avatar, storage: :imgur, imgur_credentials: 'path.to/file.yml'
 ```
-...or a File itself
+…or a File itself
 ```ruby
 has_attached_file :avatar, storage: :imgur, imgur_credentials: File.open('path.to/file.yml', 'r')
 ```
