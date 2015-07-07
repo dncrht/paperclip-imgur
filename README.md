@@ -69,3 +69,10 @@ To delete an image, follow the usual Paperclip procedure:
 @user.avatar = nil
 @user.save
 ```
+
+## Testing
+
+Run specs with
+```bash
+rspec
+```

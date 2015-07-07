@@ -96,6 +96,8 @@ module Paperclip
                         YAML.load(ERB.new(File.read(credentials.path)).result)
                       when String, Pathname
                         YAML.load(ERB.new(File.read(credentials)).result)
+                      else
+                        credentials
                       end
 
         return credentials.stringify_keys if credentials.respond_to? :stringify_keys
