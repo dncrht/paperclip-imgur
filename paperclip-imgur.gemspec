@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |gem|
   gem.name          = 'paperclip-imgur'
-  gem.version       = '0.1.1'
+  gem.version       = '0.1.2'
   gem.authors       = ['Daniel Cruz Horts']
   gem.description   = %q{Extends Paperclip with Imgur storage}
   gem.summary       = gem.description
@@ -16,7 +16,7 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ['lib']
 
-  gem.add_dependency 'imgurapi', '~> 2.0.2'
+  gem.add_dependency 'imgurapi', '~> 3.0.0'
   gem.add_development_dependency 'byebug'
   gem.add_development_dependency 'rspec'
 end
