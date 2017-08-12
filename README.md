@@ -22,6 +22,7 @@ Tell your typical model™ to use Imgur as storage:
 ```ruby
 class User < ActiveRecord::Base
   has_attached_file :avatar, storage: :imgur
+  validates_attachment_content_type :avatar, content_type: /\Aimage\/.*\z/
 end
 ```
 
@@ -31,6 +32,7 @@ The credentials to upload and delete images from Imgur will be read from `#{Rail
 ```yml
 client_id: 'CLIENT_ID'
 client_secret: 'CLIENT_SECRET'
+access_token: 'ACCESS_TOKEN'
 refresh_token: 'REFRESH_TOKEN'
 ```
 
@@ -38,11 +40,11 @@ Get these keys with:
 ```bash
 rake imgur:authorize CLIENT_ID='CLIENT_ID' CLIENT_SECRET='CLIENT_SECRET'
 ```
-Please refer to the [API client gem documentation](https://github.com/dncrht/imgur) for more information on this.
+Please refer to the [API client gem documentation](https://github.com/dncrht/imgur) for more information on this. Create an [application](https://imgur.com/account/settings/apps) if you don't have those client keys yet.
 
 You can also specify the credentials per model attribute, using a hash:
 ```ruby
-has_attached_file :avatar, storage: :imgur, imgur_credentials: {client_id: 'CLIENT_ID', client_secret: 'CLIENT_SECRET', refresh_token: 'REFRESH_TOKEN'}
+has_attached_file :avatar, storage: :imgur, imgur_credentials: {client_id: 'CLIENT_ID', client_secret: 'CLIENT_SECRET', access_token: 'ACCESS_TOKEN', refresh_token: 'REFRESH_TOKEN'}
 ```
 …or path to a YAML file
 ```ruby
