@@ -31,20 +31,12 @@ module Paperclip
       end
 
       def flush_writes
-        @queued_for_write.each do |style, file| #style is 'original' etc...
-
-          begin
-            image = imgur_session.image.image_upload(file)
-            image_id = image.id
-          rescue
-            # Sometimes there are API or network errors.
-            # In this cases, we don't store anything.
-            image_id = nil
-          end
+        @queued_for_write.each do |style, file| # 'style' is 'original' etc…
+          image = imgur_session.image.image_upload(file)
 
           # We cannot use update_attribute because it internally calls save, and save calls
           # flush_writes again, and it will end up in a stack overflow due excessive recursion
-          instance.update_column :"#{name}_#{:file_name}", image_id
+          instance.update_column :"#{name}_#{:file_name}", image.id
         end
         after_flush_writes
         @queued_for_write = {}
