@@ -1,6 +1,6 @@
 # Paperclip::Imgur
 
-This gem extends [Paperclip](https://github.com/thoughtbot/paperclip) with [Imgur](http://imgur.com/) storage. It's been tested with Paperclip 3.3.1 and 4.3.
+This gem extends [Paperclip](https://github.com/thoughtbot/paperclip) with [Imgur](http://imgur.com/) storage. It's been tested with Paperclip 3.3.1, 4.3 and 5.1.
 
 If you want Paperclip Dropbox support, have a look at this [great gem](https://github.com/janko-m/paperclip-dropbox/).
 
