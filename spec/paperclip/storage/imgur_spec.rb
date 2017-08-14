@@ -1,7 +1,7 @@
-require 'paperclip-imgur'
 require 'active_record'
+require 'paperclip-imgur'
 
-class CreateUsers < ActiveRecord::Migration
+class CreateUsers < ActiveRecord::Migration[5.1]
   self.verbose = false
 
   def change
