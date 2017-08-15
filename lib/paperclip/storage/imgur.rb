@@ -56,7 +56,7 @@ module Paperclip
 
         return @url_generator.for(size, {}) if image_id.nil? || image_id.empty? # Show Paperclip's default missing image path
 
-        ::Imgurapi::Image.new(id: image_id).url(size)
+        Imgurapi::Image.new(id: image_id).url(size)
       end
 
       # Returns the path of the attachment.
@@ -75,7 +75,7 @@ module Paperclip
       private
 
       def imgur_session
-        @imgur_session ||= ::Imgurapi::Session.instance(@imgur_credentials)
+        @imgur_session ||= Imgurapi::Session.instance(@imgur_credentials)
       end
 
       def parse_credentials(credentials = nil)
