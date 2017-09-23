@@ -26,7 +26,7 @@ describe Paperclip::Storage::Imgur do
 
     FileUtils.rm_rf 'tmp'
     FileUtils.mkdir_p 'tmp'
-    ActiveRecord::Base.establish_connection('sqlite3:///tmp/foo.sqlite3')
+    ActiveRecord::Base.establish_connection('sqlite3:///tmp/paperclip-imgur.sqlite3')
     CreateUsers.migrate(:up)
     Paperclip.options[:log] = false
   end
@@ -43,7 +43,7 @@ describe Paperclip::Storage::Imgur do
     end
 
     it 'should accept a properly formed hash' do
-      set_options(imgur_credentials: {client_key: '1', client_secret: '2', access_token: '3', refresh_token: '4'})
+      set_options(imgur_credentials: {client_id: '1', client_secret: '2', access_token: '3', refresh_token: '4'})
 
       expect { User.new.avatar }.to_not raise_error
     end
@@ -80,7 +80,7 @@ describe Paperclip::Storage::Imgur do
 
   describe '#url' do
     before do
-      User = Class.new(ActiveRecord::Base) { has_attached_file :avatar, storage: :imgur, imgur_credentials: {client_key: '1', client_secret: '2', access_token: '3', refresh_token: '4'} }
+      User = Class.new(ActiveRecord::Base) { has_attached_file :avatar, storage: :imgur, imgur_credentials: {client_id: '1', client_secret: '2', access_token: '3', refresh_token: '4', use_ssl: true} }
     end
 
     it "should return the missing image path if there's no image" do
@@ -91,9 +91,9 @@ describe Paperclip::Storage::Imgur do
     it "should return Imgur's image paths if there's an image" do
       user = User.create(avatar_file_name: 'random_valid_hash')
 
-      expect(user.avatar.url(:random_size)).to eq "http://i.imgur.com/random_valid_hash.jpg"
-      expect(user.avatar.url(:small_square)).to eq "http://i.imgur.com/random_valid_hashs.jpg"
-      expect(user.avatar.url(:large_thumbnail)).to eq "http://i.imgur.com/random_valid_hashl.jpg"
+      expect(user.avatar.url(:random_size)).to eq "https://i.imgur.com/random_valid_hash.jpg"
+      expect(user.avatar.url(:small_square)).to eq "https://i.imgur.com/random_valid_hashs.jpg"
+      expect(user.avatar.url(:large_thumbnail)).to eq "https://i.imgur.com/random_valid_hashl.jpg"
     end
   end
 end

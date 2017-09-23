@@ -34,7 +34,10 @@ client_id: 'CLIENT_ID'
 client_secret: 'CLIENT_SECRET'
 access_token: 'ACCESS_TOKEN'
 refresh_token: 'REFRESH_TOKEN'
+use_ssl: false
 ```
+
+`use_ssl` is an optional, boolean key. When omitted, it's considered as false.
 
 Get these keys with:
 ```bash

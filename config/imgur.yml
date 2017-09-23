@@ -1,4 +1,5 @@
-app_key: 1
-app_secret: 2
-access_token: 3
-access_token_secret: 4
+client_id: '1'
+client_secret: '2'
+access_token: '3'
+refresh_token: '4'
+use_ssl: false

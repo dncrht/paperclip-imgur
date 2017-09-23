@@ -2,7 +2,7 @@ $:.push File.expand_path('../lib', __FILE__)
 
 Gem::Specification.new do |s|
   s.name          = 'paperclip-imgur'
-  s.version       = '0.1.5'
+  s.version       = '0.2.0'
   s.authors       = ['Daniel Cruz Horts']
   s.description   = %q{Extends Paperclip with Imgur storage}
   s.summary       = s.description
@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.test_files    = s.files.grep(%r{^(test|spec|features)/})
   s.require_paths = ['lib']
 
-  s.add_dependency 'imgurapi', '>= 3.0.2'
+  s.add_dependency 'imgurapi', '>= 3.2.1'
   s.add_development_dependency 'paperclip'
   s.add_development_dependency 'activerecord', '>= 5.1'
   s.add_development_dependency 'sqlite3'
