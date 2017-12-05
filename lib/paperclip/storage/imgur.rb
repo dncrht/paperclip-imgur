@@ -32,7 +32,7 @@ module Paperclip
 
       def flush_writes
         @queued_for_write.each do |style, file| # 'style' is 'original' etc…
-          image = imgur_session.image.image_upload(file)
+          image = imgur_session.image.image_upload(file.path)
 
           # We cannot use update_attribute because it internally calls save, and save calls
           # flush_writes again, and it will end up in a stack overflow due excessive recursion
